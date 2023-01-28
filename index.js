@@ -5,7 +5,7 @@ import * as dotenv from 'dotenv' // see https://github.com/motdotla/dotenv#how-d
 dotenv.config()
 
 const app = express();
-
+// console.log(process.env.PORT)
 const PORT = process.env.PORT;
 
 // console.log(process.env)
