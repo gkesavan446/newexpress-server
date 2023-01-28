@@ -110,7 +110,7 @@ const movies = [
 app.use(express.json());
 
 app.get("/", function (request, response) {
-    response.send("Hello, 🙋‍♂️, Welcome to our new movies server 🌏 🎊✨🤩");
+    response.send("Hello 🙋‍♂️, Welcome to our new movies server 🌏 🎊✨🤩");
 });
 
 app.get("/movies", async function (request, response) {
