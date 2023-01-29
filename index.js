@@ -1,6 +1,10 @@
 // const express = require("express");
 import express, { json } from "express";
 import { Db, MongoClient } from "mongodb";
+import movieRouter from './router/movie.route.js'
+import userRouter from './router/user.route.js'
+import bcrypt from 'bcrypt';
+import cors from 'cors';
 import * as dotenv from 'dotenv' // see https://github.com/motdotla/dotenv#how-do-i-use-dotenv-with-import
 dotenv.config()
 
@@ -106,59 +110,17 @@ const movies = [
         "id": "109"
     }
 ]
-
+app.use(cors())
 app.use(express.json());
 
 app.get("/", function (request, response) {
     response.send("Hello 🙋‍♂️, Welcome to our new movies server 🌏 🎊✨🤩");
 });
 
-app.get("/movies", async function (request, response) {
-    if (request.query.rating) {
-        request.query.rating = + request.query.rating
-    }
-    console.log(request.query)
-    const movies = await client.db("newmongo").collection("newmovies").find(request.query).toArray();
-    response.send(movies)
-});
+app.use("/movies", movieRouter);
 
-// app.get("/movies/:id", function (request, response) {
-//     const { id } = request.params;
-//     const movie = movies.find((mv) => mv.id === id);
-//     movie ? response.send(movie) : response.status(404).send({ Message: "Movie Not Found" })
-// });
-
-app.get("/movies/:id", async function (request, response) {
-    const { id } = request.params;
-    const movie = await client.db("newmongo").collection("newmovies").findOne({ id: id })
-    // const movie = movies.find((mv) => mv.id === id);
-    movie ? response.send(movie) : response.status(404).send({ Message: "Movie Not Found" })
-});
-
-app.post("/movies", async function (request, response) {
-    const data = request.body;
-    console.log(data);
-    //db.movies.insertMany({})
-    const result = await client.db("newmongo").collection("newmovies").insertMany(data);
-    response.send(result);
-
-});
-
-app.delete("/movies/:id", async function (request, response) {
-    const { id } = request.params;
-    const result = await client.db("newmongo").collection("newmovies").deleteOne({ id: id })
-
-    result.deletedCount > 0 ?
-        response.send({ Message: "Movie Deleted Successflly!!!" })
-        : response.status(404).send({ Message: "Movie Not Found!" })
-});
-
-app.put("/movies/:id", async function (request, response) {
-    const { id } = request.params;
-    const data = request.body;
-    const movie = await client.db("newmongo").collection("newmovies").updateOne({ id: id }, { "$set": data })
-    // const movie = movies.find((mv) => mv.id === id);
-    movie ? response.send(movie) : response.status(404).send({ Message: "Movie Not Found" })
-});
+app.use("/user", userRouter);
 
 app.listen(PORT, () => console.log(`The server started in: ${PORT} ✨✨`));
+
+export { client }
